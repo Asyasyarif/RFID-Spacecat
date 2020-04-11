@@ -1,0 +1,14 @@
+{
+  "name": "Spacecat",
+  "keywords": "rfid, spi, iot",
+  "description": "A simple library Arduino RFID for Auth",
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/AsyaSyarif/RFID-Spacecat"
+  },
+  "version": "1.0.0",
+  "exclude": "doc",
+  "frameworks": "arduino",
+  "platforms": ["espressif8266","espressif32",]
+}

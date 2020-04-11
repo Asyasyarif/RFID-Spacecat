@@ -1,0 +1,18 @@
+# Datatypes (KEYWORD1)
+# Methods and Functions (KEYWORD2)
+# Constants (LITERAL1)
+
+Spacecat		KEYWORD1
+
+begin   KEYWORD2
+RC522_PIN	KEYWORD2
+readCard   	KEYWORD2
+enteredPassword	KEYWORD2
+setAction 	KEYWORD2
+validate	KEYWORD2
+
+Name		LITERAL1
+TraceID		LITERAL1
+RFID		LITERAL1
+Messages	LITERAL1
+

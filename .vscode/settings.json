@@ -1,0 +1,29 @@
+{
+   
+        "git.ignoreLimitWarning": true,
+        "editor.fontFamily": "Operator Mono",
+        "editor.fontLigatures": true,
+        "editor.cursorStyle": "line-thin",
+        "editor.cursorBlinking": "smooth",
+        "workbench.fontAliasing": "auto",
+        "editor.fontSize": 15,
+        "editor.smoothScrolling": true,
+        "editor.tabSize": 2,
+        "window.zoomLevel": 0,
+        "editor.lineHeight": 24,
+    
+  
+    
+    "files.associations": {
+        "*.tcc": "cpp",
+        "memory": "cpp",
+        "array": "cpp",
+        "deque": "cpp",
+        "list": "cpp",
+        "string": "cpp",
+        "unordered_map": "cpp",
+        "vector": "cpp",
+        "initializer_list": "cpp",
+        "functional": "cpp"
+    }
+}
