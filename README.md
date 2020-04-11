@@ -1,11 +1,12 @@
-## Introduction
+![](https://github.com/AsyaSyarif/RFID-Spacecat/blob/master/header.jpg)
+# Introduction
 Spacecat is an Arduino library for ESP8266/ESP32 to makes things easier that requires authentication with an RFID card.
 
-
+[![Build Status](https://travis-ci.org/AsyaSyarif/RFID-Spacecat.svg?branch=master)](https://travis-ci.org/AsyaSyarif/RFID-Spacecat)
 ## Getting Started
 
 ### Hardware Requirements
-Spacecat is primary built for ESP8266 Chip. but for now ESP32 is a bit of a problem, now still in progress :)
+>Spacecat is primary built for ESP8266 Chip. but for now ESP32 is a bit of a problem, now still in progress :)
 - Any board with ESP8266 chips (Wemos, NodeMCU board, etc).
 - RC522 RFID board can be found [here](https://www.aliexpress.com/wholesale?catId=0&initiative_id=SB_20200411031748&SearchText=rc522) or [here.](https://www.tokopedia.com/search?st=product&q=rc522)
 - Keypad (optional).
@@ -19,7 +20,9 @@ You need download some couple libraries that we need,
 
 ### Preparation
 Now grab the hardware and some jumper wire and connect it like image shown below:
-![alt text](link "")
+![](https://github.com/AsyaSyarif/RFID-Spacecat/blob/master/circuits/basic.PNG)
+
+#### Table Wiring : 
 | ESP8266       | RC522         | 
 | ------------- |:-------------:|
 | 3V3      | 3.3V          | 
@@ -31,14 +34,14 @@ Now grab the hardware and some jumper wire and connect it like image shown below
 | -| IRQ      | 
 | GND | RST      | 
 
-### Example
+### Simple Usage or Open [Examples](https://github.com/AsyaSyarif/RFID-Spacecat/tree/master/examples) folder.
 ```
 #include "Spacecat.h"
 
 const char WIFI_SSID[]     = "";   // your network SSID (name) 
 const char WIFI_PASSWORD[] = "";   // your network password
 
-const char DEVICE_NAME[] = "Testing";
+const char DEVICE_NAME[] = "Reader-1";
 const char SPACECAT_USERNAME[] = "";
 const char SPACECAT_PASSWORD[] = "";
 
@@ -108,15 +111,16 @@ void loop() {
 ```
 
 ### Get The Authentication Key
-1. Sign Up [Free here](rfid.asyarif.net)
+1. Sign Up [here](https://rfid.asyarif.net/login)
 2. Create the Project.
 3. Create the Placement.
 4. After done then open placement  and go to **Options -> Credentials** menu.
 5. Copy and paste the Username & Password 
-6. put it to here in your code :
-`const char SPACECAT_USERNAME[] = "";`
-`const char SPACECAT_PASSWORD[] = "";`
-
+6. Put it to here in your code :
+```
+const char SPACECAT_USERNAME[] = "";
+const char SPACECAT_PASSWORD[] = "";
+```
 
 ### Notes
  Every request to the server has limitations, only **60 requests per minute**, 
