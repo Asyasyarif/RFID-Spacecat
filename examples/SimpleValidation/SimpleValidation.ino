@@ -88,6 +88,7 @@ void loop() {
         Serial.printf("User Authenticated : %s ", cat.Name().c_str());
       break;  
 
+      //Password 12345678 is just example, change it with your password
       case FILL_THE_PASSWORD:
         Serial.println("Insert Password   :");
         if(cat.enteredPassword("123456")){
@@ -95,10 +96,6 @@ void loop() {
         }else{  
           Serial.println("Wrong Password");
         }
-      break;
-
-      case ERR_NOT_FOUND:
-        Serial.println("Not found");
       break;
 
       case UNSUCCESSFULL:
