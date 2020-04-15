@@ -30,6 +30,6 @@ void loop(){
         Serial.print("RFID: ");
         Serial.println(cat.RFID());
     }
-	
 	delay (200);
 }
+
