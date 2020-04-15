@@ -87,7 +87,7 @@ extern "C" {
 #define FILL_THE_PASSWORD       107
 #define REACH_THE_LIMIT         108
 #define SUCCESS                 200
-#define ERR_NOT_FOUND           404
+#define ERR_NOT_FOUND           109
 
 class Spacecat{
 

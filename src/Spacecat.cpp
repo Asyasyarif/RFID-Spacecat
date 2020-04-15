@@ -366,16 +366,17 @@ uint8_t Spacecat::validate(){
                             this->_isHavePassword = true;
                             this->_isreadCard = false;
                             return FILL_THE_PASSWORD;
-                        }else if(userData._codeState == USER_N_ACTIVE || PROJECT_N_ACTIVE || PLACEMENT_N_ACTIVE || REACH_THE_LIMIT){
+                        }else if(userData._codeState == USER_N_ACTIVE || PROJECT_N_ACTIVE || PLACEMENT_N_ACTIVE || REACH_THE_LIMIT || ERR_NOT_FOUND){
                             this->_isreadCard = false;
                             return UNSUCCESSFULL;
                         }
                     }
-                }else if(_httpCode == ERR_NOT_FOUND){
-                    return ERR_NOT_FOUND;
+                }else if(_httpCode == HTTP_CODE_NOT_FOUND){
+                     Serial.println(F("Data not found!"));
+                    return HTTP_CODE_NOT_FOUND;
                 }else if(_httpCode == HTTP_CODE_TOO_MANY_REQUESTS){
                     Serial.println(F("Wait a sec, to many request!"));
-                    return ERR_NOT_FOUND;
+                    return HTTP_CODE_TOO_MANY_REQUESTS;
                 }
                 return true;
             }else{
