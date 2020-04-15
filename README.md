@@ -12,7 +12,7 @@ Spacecat is an Arduino library for ESP8266/ESP32 to makes things easier that req
 - Keypad (optional).
 
 ### Installing Library
-You need download some couple libraries that we need, 
+You need download some libraries that we need, 
 - Spacecat library from [Github](https://github.com/AsyaSyarif/RFID-Spacecat). 
 - RC522 library from [Github](https://github.com/miguelbalboa/rfid)
 - ArduinoJson from [Github](https://github.com/bblanchon/ArduinoJson)
@@ -111,12 +111,12 @@ void loop() {
 ```
 
 ### Get The Authentication Key
-1. Sign Up [here](https://rfid.asyarif.net/login)
-2. Create the Project.
-3. Create the Placement.
-4. After done then open placement  and go to **Options -> Credentials** menu.
-5. Copy and paste the Username & Password 
-6. Put it to here in your code :
+- Sign Up [here](https://rfid.asyarif.net/login)
+- Create the Project.
+- Create the Placement.
+- After done then open placement  and go to **Options -> Credentials** menu.
+- Copy and paste the Username & Password 
+- Put it to here in your code :
 ```
 const char SPACECAT_USERNAME[] = "";
 const char SPACECAT_PASSWORD[] = "";
