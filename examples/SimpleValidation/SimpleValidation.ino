@@ -20,12 +20,8 @@
  * for example i'm use hard code for password : "12345678",
  * if the User Password is match, you'll get a messages on serial Monitor "Password Correct"
  * and if Wrong you'll get "Wrong Password"
- * 
  * for real purpose it must have to use keypad,
  * and put User Password into *.enterpassword attributes.
- *    
- * -- ERR_NOT_FOUND
- * this case if User Not Found or Unregistered
  * 
  * -- UNSUCCESSFULL
  * this case if User, Placment or the Rule does not meet the conditions 
