@@ -3,6 +3,7 @@
 Spacecat is an Arduino library for ESP8266/ESP32 to makes things easier that requires authentication with an RFID card.
 
 [![Build Status](https://travis-ci.org/AsyaSyarif/RFID-Spacecat.svg?branch=master)](https://travis-ci.org/AsyaSyarif/RFID-Spacecat)
+[![arduino-library-badge](https://www.ardu-badge.com/badge/MyLibrary.svg?)](https://www.ardu-badge.com/Spacecat)
 ## Getting Started
 
 ### Hardware Requirements
@@ -123,7 +124,7 @@ const char SPACECAT_PASSWORD[] = "";
 ```
 
 ### Notes
- Every request to the server has limitations, only **60 requests per minute**, 
+ Every request to the server has limitations, only **300 requests per minute**, 
 less than that will be accepted and the rest will be rejected and wait a few moments
 
 
