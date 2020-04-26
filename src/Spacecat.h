@@ -98,7 +98,7 @@ private:
     bool _requesting = false;
     bool _isSuccess = false;
     bool _isHavePassword = false;
-    bool doLoop = false;
+    bool _doLoop = false;
     uint8_t _httpCode;
     unsigned int _port = PORT;
     uint8_t _sdaPin;

@@ -7,7 +7,7 @@
     "type": "git",
     "url": "https://github.com/AsyaSyarif/RFID-Spacecat"
   },
-  "version": "1.2.0",
+  "version": "1.2.1",
   "exclude": "doc",
   "frameworks": "arduino",
   "platforms": ["espressif8266","espressif32"]

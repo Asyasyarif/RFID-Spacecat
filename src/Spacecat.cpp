@@ -415,7 +415,7 @@ void Spacecat::readCard(){
         this->rc522.PICC_HaltA();
         this->rc522.PCD_StopCrypto1();
 
-        if(doLoop){
+        if(_doLoop){
             this->validate(this->doHash(_content.substring(0)));
             return;
         }
@@ -426,7 +426,7 @@ void Spacecat::readCard(){
 
 void Spacecat::loop(){
 
-    doLoop = true;
+    _doLoop = true;
     currentMillis = millis();
     if(_requesting && _isreadCard){
         if(currentMillis - _PREVIOUS_TIME_WAITING_HTTP_REQUEST >= _TIMER_TIMEOUT_WAITING_HTTP_REQUEST){
