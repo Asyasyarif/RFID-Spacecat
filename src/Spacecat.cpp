@@ -341,6 +341,7 @@ uint8_t Spacecat::validate(String idcard){
             Serial.print(F("Payload : "));
             Serial.println(_payload);
 #endif       
+            Serial.println(this->_httpCode);
             if(this->_httpCode == HTTP_CODE_OK){
                 const size_t capacity = JSON_OBJECT_SIZE(5) + 256;
                 DynamicJsonDocument doc(capacity);
@@ -364,13 +365,14 @@ uint8_t Spacecat::validate(String idcard){
                 }
            
             }else if(_httpCode == HTTP_CODE_NOT_FOUND){
-            this->_http.end();
 #ifdef DEBUG_D
                 Serial.println(F("Data not found!"));
 #endif
                 Serial.println(F("*Done"));
+                
                     if(_callbackEvent != NULL)
                         this->_isreadCard = false;
+                        this->_requesting = false;
                         _callbackEvent(109, "-" , "-", "Not Found");
                 return HTTP_CODE_NOT_FOUND;
             }else if(_httpCode == HTTP_CODE_TOO_MANY_REQUESTS){
@@ -379,8 +381,9 @@ uint8_t Spacecat::validate(String idcard){
             Serial.println(F("Wait a sec, to many request!"));
 #endif
             Serial.println(F("*Done"));
-            this->_isreadCard = false;
             if(_callbackEvent != NULL)
+                         this->_isreadCard = false;
+                        this->_requesting = false;
                     _callbackEvent(109, "-" , "-", "Not Found");
                 return HTTP_CODE_TOO_MANY_REQUESTS;
             }

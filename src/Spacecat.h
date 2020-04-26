@@ -99,7 +99,7 @@ private:
     bool _isSuccess = false;
     bool _isHavePassword = false;
     bool _doLoop = false;
-    uint8_t _httpCode;
+    int _httpCode;
     unsigned int _port = PORT;
     uint8_t _sdaPin;
     uint8_t _resetPin;
