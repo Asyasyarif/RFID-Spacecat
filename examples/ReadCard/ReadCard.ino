@@ -11,7 +11,6 @@
 
 #include "Spacecat.h"
 
-
 #define RC522_SS_PIN 15
 Spacecat cat;
 
@@ -20,16 +19,13 @@ void setup(){
     Serial.begin(115200);
 
     //the reset pin of RC522 connected to Ground (GND)
-    cat.RC522_PIN(RC522_SS_PIN);
-    Serial.println("ready");
+    cat.begin(RC522_SS_PIN);
 }
 
 void loop(){
-	
-    if(cat.readCard()){
-        Serial.print("RFID: ");
-        Serial.println(cat.RFID());
-    }
-	delay (200);
+
+    cat.readCard();
+    delay (10);
+    
 }
 
