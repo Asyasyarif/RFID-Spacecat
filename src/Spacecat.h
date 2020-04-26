@@ -86,29 +86,38 @@ extern "C" {
 #define ERR_INVALID_PASSOWORD   106
 #define FILL_THE_PASSWORD       107
 #define REACH_THE_LIMIT         108
-#define SUCCESS                 200
 #define ERR_NOT_FOUND           109
+typedef void (*Callback_Event)(int code, String refrence , String name, String messages);
+
 
 class Spacecat{
 
 private:
     bool _debug = false;
     bool _isreadCard = false;
+    bool _requesting = false;
     bool _isSuccess = false;
     bool _isHavePassword = false;
-    int _httpCode;
+    bool doLoop = false;
+    uint8_t _httpCode;
     unsigned int _port = PORT;
     uint8_t _sdaPin;
     uint8_t _resetPin;
-    #define _INTERVAL_READING_CARD 3000
+    uint8_t timer;
+    uint8_t timeTimeout = 3; // three seconds
+    int _INTERVAL_READING_CARD = 0;
+    #define _TIMER_TIMEOUT_WAITING_HTTP_REQUEST 1000
     #define _INTERVAL_INSERT_PASSWORD 5000
     unsigned long _TIMER_READING_CARD = 0;
     unsigned long _TIMER_WAITING_INSERT_PASSWORD = 0;
+    unsigned long _PREVIOUS_TIME_WAITING_HTTP_REQUEST = 0;
+    unsigned long currentMillis;
     String _content, _payload;
     String _USERNAME_KEY;
     String _PASSWORD_KEY;
     String _DEVICE_NAME;
     String _DEVICE_TYPE = "RFID-READER";
+    uint8_t validate(String idcard);
     String getLocalIP();
     String getMacAddress();
     String getWiFiSSID();
@@ -119,7 +128,6 @@ private:
     String createUriGetAccess();
     String createUriDeviceStatus();
     String createUriPassword();
-    String readingCard();
     String doHash(String _id);
     String upTimeDevice();
     void setPort(unsigned int port){ this->_port = port;}
@@ -130,7 +138,7 @@ private:
     bool initializeDevice();
     HTTPClient _http;
     MFRC522 rc522;
-    
+    Callback_Event _callbackEvent;
     struct rfidData{
         int    _codeState;
         String _username;
@@ -140,20 +148,18 @@ private:
     } userData;
 
 public:
+    void loop();
+    void setSimpleCallback(Callback_Event callback);
+    void setRawCallback();
+    void intervalReading(int time);
+    void readCard();
     Spacecat(String Username, String Password, String DeviceName);
-    void RC522_PIN(uint8_t SS_PIN);
-    void RC522_PIN(uint8_t SS_PIN, uint8_t RESET_PIN);
+    Spacecat();
     const char* _certificate = "EE:1A:A8:59:25:F2:67:6B:4D:D2:BB:45:DE:AE:37:C2:CF:4C:97:A1";
-    uint8_t validate();
     uint8_t getWifiQuality();
-    bool readCard();
     bool enteredPassword(String user_password);
-    bool begin();
-    uint8_t Code();
-    String Name();
-    String TraceID();
-    String Messages();
-    String RFID();
+    bool begin(uint8_t SS_PIN);
+    bool begin(uint8_t SS_PIN, uint8_t RESET_PIN);
 };
 
 #endif

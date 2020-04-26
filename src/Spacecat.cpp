@@ -33,8 +33,21 @@ Spacecat::Spacecat(String username, String password, String deviceName){
     this->_DEVICE_NAME  = deviceName;
 }
 
+Spacecat::Spacecat(){
+      Serial.print("Only Read the card : OK");
+}
+
+void Spacecat::intervalReading(int timer){
+    if(timer && timer != 0){
+        this->_INTERVAL_READING_CARD = timer;
+    }else{
+        this->_INTERVAL_READING_CARD = 1000; // defualt 1 Sec
+    }
+}
+
 void Spacecat::init(void){
    SPI.begin();
+   this->intervalReading(_INTERVAL_READING_CARD);
    this->rc522.PCD_Init(_sdaPin, _resetPin);
 #ifdef DEBUG_D
        Serial.println(lib_version);
@@ -77,7 +90,6 @@ uint8_t Spacecat::getBootVersion(){
 #elif defined(ARDUINO_ARCH_ESP32)
     return 0;
 #endif
-
 }
 
 uint8_t Spacecat::getBootMode(){
@@ -86,9 +98,7 @@ uint8_t Spacecat::getBootMode(){
 #elif defined(ARDUINO_ARCH_ESP32)
     return 0;
 #endif
-
 }
-
 
 uint8_t Spacecat::getWifiQuality(){
     int32_t dbm = WiFi.RSSI();
@@ -127,19 +137,12 @@ String Spacecat::upTimeDevice(){
     return (String)Day +" Day "+ (String)Hour +" Hour, " + (String)Minute + " Min, " + (String)Second + " Sec";
 }
 
-void Spacecat::RC522_PIN(uint8_t SS_PIN){
+
+bool Spacecat::begin(uint8_t SS_PIN){
+    Serial.print("Initialization : ");
+     _callbackEvent = NULL;
     this->_sdaPin = SS_PIN;
     this->init();
-}
-
-void Spacecat::RC522_PIN(uint8_t SS_PIN, uint8_t RESET_PIN){
-    this->_sdaPin   = SS_PIN;
-    this->_resetPin = RESET_PIN;
-    init();
-}
-
-bool Spacecat::begin(){
-    Serial.print("Initialization : ");
     if(WiFi.status() == WL_CONNECTED){
         if(this->initializeDevice()){
             Serial.println(F("Done "));
@@ -149,25 +152,21 @@ bool Spacecat::begin(){
     return false;
 }
 
-uint8_t Spacecat::Code(){
-    return this->userData._codeState;
+bool Spacecat::begin(uint8_t SS_PIN, uint8_t RESET_PIN){
+    Serial.print("Initialization : ");
+     _callbackEvent = NULL;
+    this->_sdaPin   = SS_PIN;
+    this->_resetPin = RESET_PIN;
+    this->init();
+    if(WiFi.status() == WL_CONNECTED){
+        if(this->initializeDevice()){
+            Serial.println(F("Done "));
+            return true;
+        }
+    }
+    return false;
 }
 
-String Spacecat::Name(){
-    return this->userData._username;
-}
-
-String Spacecat::RFID(){
-    return this->userData._rfid;
-}
-
-String Spacecat::TraceID(){
-    return this->userData._traceID;
-}
-
-String Spacecat::Messages(){
-    return this->userData._messages;
-}
 
 String Spacecat::doHash(String id){
     return sha1(id);
@@ -246,10 +245,10 @@ bool Spacecat::enteredPassword(String Password){
     Serial.print(F("Payload : "));
     Serial.println(_payload);
 #endif
-        if(this->_httpCode == HTTP_CODE_OK){
-            return true;
-        }
-        return false;
+    if(this->_httpCode == HTTP_CODE_OK){
+        return true;
+    }
+    return false;
     }
     return false;
 }
@@ -314,21 +313,21 @@ bool Spacecat::initializeDevice(){
     return false;
 }
 
-uint8_t Spacecat::validate(){ 
-       
-        if(this->readCard() && _isSuccess ){
-            if(WiFi.status() == WL_CONNECTED){
+uint8_t Spacecat::validate(String idcard){ 
+        Serial.print(F("\nPlease Wait, "));
+        this->userData._rfid = idcard; 
 #ifdef  USE_HTTPS
-            this->_http.begin(this->createUriGetAccess(),this->_certificate); 
+        this->_http.begin(this->createUriGetAccess(),this->_certificate); 
+        _requesting = true;
 #else
-            this->_http->begin(this->createUriGetAccess()); 
+        this->_http->begin(this->createUriGetAccess()); 
 #endif       
-            Serial.print(F("\nRequesting : "));
-            this->_http.addHeader("Content-Type", "application/x-www-form-urlencoded");
-            this->_http.addHeader("SECRET-KEY", _USERNAME_KEY);
-            this->_httpCode = _http.GET();
-            this->_payload = _http.getString();
-
+        this->_http.setTimeout(500);
+        this->_http.addHeader("Content-Type", "application/x-www-form-urlencoded");
+        this->_http.addHeader("SECRET-KEY", _USERNAME_KEY);
+        this->_httpCode = _http.GET();
+        this->_payload = _http.getString();
+           
 #ifdef DEBUG_PATH_REQUEST_ACCESS
             Serial.println(this->createUriGetAccess());
 #endif
@@ -341,106 +340,124 @@ uint8_t Spacecat::validate(){
 #ifdef DEBUG_HTTP_CODE_REQUEST_ACCESS
             Serial.print(F("Payload : "));
             Serial.println(_payload);
-#endif      
-            this->_http.end();
-            const size_t capacity = JSON_OBJECT_SIZE(5) + 256;
-            Serial.println(F("Done\n"));
-                if(this->_httpCode == SUCCESS){
-                    DynamicJsonDocument doc(capacity);
-                    doc.clear();
-                    DeserializationError error = deserializeJson(doc, _payload);
-                    if(error){
-                        Serial.print(F("deserializeJson() failed: "));
-                        Serial.println(error.c_str());
-                        return false;
-                    }else{
-                        this->userData._username  = doc["name"].as<String>();
-                        this->userData._codeState = doc["code"].as<int>();
-                        this->userData._traceID   = doc["reference"].as<String>();
-                        this->userData._messages  = doc["messages"].as<String>();
-                      
-                        if(userData._codeState == SUCCEED){
-                            this->_isreadCard = false;
-                            return SUCCEED;
-                        }else if(userData._codeState == FILL_THE_PASSWORD){
-                            this->_isHavePassword = true;
-                            this->_isreadCard = false;
-                            return FILL_THE_PASSWORD;
-                        }else if(userData._codeState == USER_N_ACTIVE || PROJECT_N_ACTIVE || PLACEMENT_N_ACTIVE || REACH_THE_LIMIT || ERR_NOT_FOUND){
-                            this->_isreadCard = false;
-                            return UNSUCCESSFULL;
-                        }
-                    }
-                }else if(_httpCode == HTTP_CODE_NOT_FOUND){
-                     Serial.println(F("Data not found!"));
-                    return HTTP_CODE_NOT_FOUND;
-                }else if(_httpCode == HTTP_CODE_TOO_MANY_REQUESTS){
-                    Serial.println(F("Wait a sec, to many request!"));
-                    return HTTP_CODE_TOO_MANY_REQUESTS;
+#endif       
+            if(this->_httpCode == HTTP_CODE_OK){
+                const size_t capacity = JSON_OBJECT_SIZE(5) + 256;
+                DynamicJsonDocument doc(capacity);
+                doc.clear();
+                DeserializationError error = deserializeJson(doc, _payload);
+                this->_http.end();
+                if(error){
+                    this->_isreadCard = false;
+                    Serial.print(F("deserializeJson() failed: "));
+                    Serial.println(error.c_str());
+                    return false;
+                }else{
+                    Serial.println(F("Done"));
+                    this->userData._username  = doc["name"].as<String>();
+                    this->userData._codeState = doc["code"].as<int>();
+                    this->userData._traceID   = doc["reference"].as<String>();
+                    this->userData._messages  = doc["messages"].as<String>();
+                    if(_callbackEvent != NULL)
+                        this->_isreadCard = false;
+                        _callbackEvent(this->userData._codeState, this->userData._traceID, this->userData._username, this->userData._messages);
                 }
-                return true;
-            }else{
-                return WL_DISCONNECTED;
-            }
-            return false;
-        }
-  return false;
-}
-
-/*
-   @return string RFID
-*/
-String Spacecat::readingCard(){
-
-    this->_content = "";
-    this->userData._rfid = "";
-   
-    for(byte i = 0; i < rc522.uid.size; i++){
-        this->_content.concat(String(this->rc522.uid.uidByte[i] < 0x10 ? "0" : ""));
-        this->_content.concat(String(this->rc522.uid.uidByte[i]));
-    }
-    this->userData._rfid = this->doHash(_content.substring(0));
-
+           
+            }else if(_httpCode == HTTP_CODE_NOT_FOUND){
+            this->_http.end();
 #ifdef DEBUG_D
-        Serial.print(F("RFID : "));
-        Serial.println(this->userData._rfid);
+                Serial.println(F("Data not found!"));
 #endif
-    this->_isreadCard = false;
-    this->rc522.PICC_HaltA();
-    this->rc522.PCD_StopCrypto1();
-    return userData._rfid;
+                Serial.println(F("*Done"));
+                    if(_callbackEvent != NULL)
+                        this->_isreadCard = false;
+                        _callbackEvent(109, "-" , "-", "Not Found");
+                return HTTP_CODE_NOT_FOUND;
+            }else if(_httpCode == HTTP_CODE_TOO_MANY_REQUESTS){
+            this->_http.end();
+#ifdef DEBUG_D
+            Serial.println(F("Wait a sec, to many request!"));
+#endif
+            Serial.println(F("*Done"));
+            this->_isreadCard = false;
+            if(_callbackEvent != NULL)
+                    _callbackEvent(109, "-" , "-", "Not Found");
+                return HTTP_CODE_TOO_MANY_REQUESTS;
+            }
+            this->_http.end();
+return false;
 }
 
-/*
-    returning bool value
-    true for reading card
-    false nor reading card
-*/
-bool Spacecat::readCard(){
-    if(!this->rc522.PICC_IsNewCardPresent()){
-        return false;
+void Spacecat::setSimpleCallback(Callback_Event callback){
+   _callbackEvent = callback;
+}
+
+void Spacecat::readCard(){
+    currentMillis = millis();
+
+   if(!this->rc522.PICC_IsNewCardPresent()){
+        return;
     }
     if(!this->rc522.PICC_ReadCardSerial()){
-        return false;
+        return;
+    }
+   
+    if(currentMillis > _TIMER_READING_CARD + _INTERVAL_READING_CARD && !this->_isreadCard){
+        this->_TIMER_READING_CARD = currentMillis;
+        this->_isreadCard = true;
+        this->_content = "";
+
+        for(byte i = 0; i < rc522.uid.size; i++){
+            this->_content.concat(String(this->rc522.uid.uidByte[i] < 0x10 ? "0" : ""));
+            this->_content.concat(String(this->rc522.uid.uidByte[i]));
+        }
+
+        this->rc522.PICC_HaltA();
+        this->rc522.PCD_StopCrypto1();
+
+        if(doLoop){
+            this->validate(this->doHash(_content.substring(0)));
+            return;
+        }
+         _isreadCard = false;
+         Serial.println(this->doHash(_content.substring(0)));
+    }   
+}
+
+void Spacecat::loop(){
+
+    doLoop = true;
+    currentMillis = millis();
+    if(_requesting && _isreadCard){
+        if(currentMillis - _PREVIOUS_TIME_WAITING_HTTP_REQUEST >= _TIMER_TIMEOUT_WAITING_HTTP_REQUEST){
+            timer++;
+            if(timer > timeTimeout){
+#ifdef DEBUG_D
+        Serial.println(F("Request is timeout!"));
+#endif 
+                Serial.println(F("Timeout"));
+                _callbackEvent(105, "-" , "-", "Request timeout");
+                _isreadCard = false;
+                _requesting = false;
+                timer = 0;
+            }
+            _PREVIOUS_TIME_WAITING_HTTP_REQUEST = currentMillis;
+        }
     }
 
 #ifdef DEBUG_D
         Serial.println(F("Reading Card :"));
 #endif
+        this->userData._rfid = "";
+        this->readCard();
+#ifdef DEBUG_D
+        Serial.print(F("\nRFID : "));
+        Serial.println(this->userData._rfid);
+#endif
 
-    if(millis() > _TIMER_READING_CARD + _INTERVAL_READING_CARD){
-        this->_TIMER_READING_CARD = millis();
-        this->_isreadCard = true;
-    }
-
-    if(_isreadCard){
-        this->_isreadCard = false;
-        this->readingCard();
-        return true;
-    }
-    return false;
     
 }
+
 
 
 
