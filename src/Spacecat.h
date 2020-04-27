@@ -18,7 +18,7 @@
     License along with this library; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 */
-#define lib_version 1.0
+#define lib_version "v1.2.2"
 
 #ifndef _Spacecat_h_
 #define _Spacecat_h_
@@ -30,6 +30,8 @@
 //get from https://github.com/miguelbalboa/rfid
 #include <MFRC522.h>
 #include <memory>
+#include <WiFiClientSecure.h>
+#include <WiFiClientSecureBearSSL.h>
 //Uncomment ENABLE_DEBUG for enable debuging
 // #define DEBUG_D
 
@@ -91,12 +93,12 @@ typedef void (*Callback_Event)(int code, String refrence , String name, String m
 
 
 class Spacecat{
-
+    bool _debug = true;
 private:
-    bool _debug = false;
+    
     bool _isreadCard = false;
     bool _requesting = false;
-    bool _isSuccess = false;
+    bool _isSuccessInit = false;
     bool _isHavePassword = false;
     bool _doLoop = false;
     int _httpCode;
@@ -104,13 +106,11 @@ private:
     uint8_t _sdaPin;
     uint8_t _resetPin;
     uint8_t timer;
-    uint8_t timeTimeout = 3; // three seconds
-    int _INTERVAL_READING_CARD = 0;
+    uint8_t timeTimeout = 3; // default is three seconds
     #define _TIMER_TIMEOUT_WAITING_HTTP_REQUEST 1000
+    #define _INTERVAL_UPDATE_DEVICE_STAUS 60000
     #define _INTERVAL_INSERT_PASSWORD 5000
-    unsigned long _TIMER_READING_CARD = 0;
-    unsigned long _TIMER_WAITING_INSERT_PASSWORD = 0;
-    unsigned long _PREVIOUS_TIME_WAITING_HTTP_REQUEST = 0;
+    unsigned long _INTERVAL_READING_CARD, _TIMER_READING_CARD, _TIMER_WAITING_INSERT_PASSWORD, _PREVIOUS_TIME_WAITING_HTTP_REQUEST, _PREVIOUS_INTERVAL_DEVICE_STATUS = 0;
     unsigned long currentMillis;
     String _content, _payload;
     String _USERNAME_KEY;
@@ -148,14 +148,15 @@ private:
     } userData;
 
 public:
+    const char* _certificate = "EE:1A:A8:59:25:F2:67:6B:4D:D2:BB:45:DE:AE:37:C2:CF:4C:97:A1";
     void loop();
     void setSimpleCallback(Callback_Event callback);
     void setRawCallback();
     void intervalReading(int time);
     void readCard();
+    void setDebug(bool debug);
     Spacecat(String Username, String Password, String DeviceName);
     Spacecat();
-    const char* _certificate = "EE:1A:A8:59:25:F2:67:6B:4D:D2:BB:45:DE:AE:37:C2:CF:4C:97:A1";
     uint8_t getWifiQuality();
     bool enteredPassword(String user_password);
     bool begin(uint8_t SS_PIN);
