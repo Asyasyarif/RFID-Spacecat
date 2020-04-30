@@ -1,6 +1,7 @@
 ![](https://github.com/AsyaSyarif/RFID-Spacecat/blob/master/header.jpg)
 # Introduction
 Spacecat is an Arduino library for ESP8266/ESP32 to makes things easier that requires authentication with an RFID card.
+With this library you can easily  manage users with RFID card data stored in the cloud and also you can manage by schedule or even with special parameters.
 
 [![Build Status](https://travis-ci.org/AsyaSyarif/RFID-Spacecat.svg?branch=master)](https://travis-ci.org/AsyaSyarif/RFID-Spacecat)
 [![arduino-library-badge](https://www.ardu-badge.com/badge/Spacecat.svg?)](https://www.ardu-badge.com/Spacecat)
@@ -8,13 +9,23 @@ Spacecat is an Arduino library for ESP8266/ESP32 to makes things easier that req
 
 ## Getting Started
 
-### Hardware Requirements
+## Hardware Requirements
 >Spacecat is primary built for ESP8266 Chip. but for now ESP32 is a bit of a problem, now still in progress :)
 - Any board with ESP8266/ESP32 chips (Wemos, NodeMCU board, etc).
 - RC522 RFID board can be found [here](https://www.aliexpress.com/wholesale?catId=0&initiative_id=SB_20200411031748&SearchText=rc522) or [here.](https://www.tokopedia.com/search?st=product&q=rc522)
 - Keypad (optional).
 
-### Installing Library
+## Environment Setup
+1. Download and install the [Arduino IDE](https://www.arduino.cc/en/Main/Software).
+2. If using an ESP module, install the Board Package.
+   - For **ESP8266**:
+      1. Under **File -> Preferences** add `http://arduino.esp8266.com/stable/package_esp8266com_index.json` to the **Additional Boards Manager URLs** field.
+      2. Install the **esp8266** platform from **Tools -> Board -> Boards Manager**.
+   - For **ESP32**, manually install the board package by following the instructions here: https://github.com/espressif/arduino-esp32/blob/master/README.md#installation-instructions.
+4. Connect your device to your computer using the appropriate USB cable or USB to Serial FTDI cable.
+5. Select your Arduino board or ESP module and and the correct port from the **Tools** menu.
+
+## Installing Library
 You need download some libraries that we need, 
 - Spacecat library from [Github](https://github.com/AsyaSyarif/RFID-Spacecat). 
 - RC522 library from [Github](https://github.com/miguelbalboa/rfid)
@@ -25,7 +36,7 @@ You need download some libraries that we need,
 Now grab the hardware and some jumper wire and connect it like image shown below:
 ![](https://github.com/AsyaSyarif/RFID-Spacecat/blob/master/circuits/basic.PNG)
 
-#### Wiring : 
+#### Wiring
 | ESP8266       | RC522         | 
 | ------------- |:-------------:|
 | 3V3      | 3.3V          | 
@@ -35,7 +46,7 @@ Now grab the hardware and some jumper wire and connect it like image shown below
 | D7 (GPIO13) | MOSI      | 
 | D6 (GPIO12) | MISO      | 
 | -| IRQ      | 
-| GND | RST      | 
+| GND / X | RST      | 
 
 ### Simple Usage or Open this [Examples](https://github.com/AsyaSyarif/RFID-Spacecat/tree/master/examples) folder.
 ```
@@ -104,7 +115,7 @@ void loop() {
 
 ```
 
-### Get The Authentication Key
+## Get The Authentication Key
 + **Please pay attention to accessing our website, please use desktop version instead mobile version [only temporary]**
 - Sign Up [here](https://rfid.asyarif.net/login)
 - Create the Project.
@@ -117,11 +128,29 @@ const char SPACECAT_USERNAME[] = "";
 const char SPACECAT_PASSWORD[] = "";
 ```
 
-### Notes
- Every request to the server has limitations, only **300 requests per minute**, 
-less than that will be accepted and the rest will be rejected and wait a few moments
+
+## API Docs
+Basically every we doing request to the server will return 4 basic data, which will be explained below
+
+| Value  | Description |
+| ------------- | ------------- |
+| **Code**  | ```[101]``` Success|
+|      |  ```[102]``` User not active|
+|      |  ```[103]``` Placement not active|
+|      |  ```[104]``` Success|
+|      |  ```[107]``` Waiting User Password|
+|      |  ```[108]``` User reach the limit of parameters|
+|      |  ```[109]``` Not found|
+| **Reference**  | ID Reference  for every requests  |
+| **Name**  | Name of user  |
+| **Messages**  | Messages status from requests  |
 
 
-### To Do
-* Write clean code
-* Write better documentaiton
+## Functions
+
+| Function  | Description | Default |
+| ------------- | ------------- | --------- | 
+| ``` intervalReading(int time) ```| Delay for every reading the card|  ``` 1000ms ``` |
+| ``` setDebug(bool debug) ```| Debuging purpose | ``` true ``` |
+| ``` begin(uint8_t SS_PIN) ```| Initialization RC522 Module SS Pin and Reset to GND| ``` - ``` | 
+| ``` begin(uint8_t SS_PIN, uint8_t RESET_PIN) ```| Initialization RC522 Module SS Pin & Reset Pin | ``` - ``` | 
