@@ -1,24 +1,31 @@
-/*
-    Copyright (c) 2018 Arif. All right reserved.
+/*****************************************************************************
+    With this library you can easily  manage users with RFID card data stored in the cloud
+    and also you can manage by schedule or even with special parameters.
 
-    RFID-SPACECAT - Library to create your own RFID Reader
-    ESP8266 or ESP32 on Arduino IDE.
+    The MIT License (MIT)
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+    Copyright (c) 2018-2020 Asya Syarif
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-    Lesser General Public License for more details.
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
-*/
-#define lib_version "v1.2.2"
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
+*****************************************************************************/
+
+#define lib_version "1.3.0"
 
 #ifndef _Spacecat_h_
 #define _Spacecat_h_
@@ -49,6 +56,10 @@
 // #define DEBUG_PATH_PASSWORD
 // #define DEBUG_HTTP_CODE_PASSWORD
 // #define DEBUG_PAYLOAD_PASSWORD
+
+// #define DEBUG_PUSH_VALUE
+// #define DEBUG_HTTP_CODE_PUSH_VALUE
+// #define DEBUG_PAYLOAD_PUSH_VALUE
 
 #if defined(ARDUINO_ARCH_ESP8266)
     #include <Hash.h>
@@ -91,16 +102,11 @@ extern "C" {
 #define ERR_NOT_FOUND           109
 typedef void (*Callback_Event)(int code, String refrence , String name, String messages);
 
-
 class Spacecat{
     bool _debug = true;
 private:
     
-    bool _isreadCard = false;
-    bool _requesting = false;
-    bool _isSuccessInit = false;
-    bool _isHavePassword = false;
-    bool _doLoop = false;
+    bool _isreadCard ,_requesting,_isSuccessInit, _isHavePassword, _doLoop, _isSuccessPushed, _isdoRegister, isSuccessRegister = false;
     int _httpCode;
     unsigned int _port = PORT;
     uint8_t _sdaPin;
@@ -128,15 +134,19 @@ private:
     String createUriGetAccess();
     String createUriDeviceStatus();
     String createUriPassword();
+    String createUriPushValue();
+    String createUriRegisterID();
     String doHash(String _id);
     String upTimeDevice();
     void setPort(unsigned int port){ this->_port = port;}
     void _setLed(uint8_t _ledPin);
     void init();
+    void doRegister(String rfid);
+    void parseJSON(String payload);
     bool createRequest();
-    bool writeHeader();
     bool initializeDevice();
     HTTPClient _http;
+    WiFiClientSecure client;
     MFRC522 rc522;
     Callback_Event _callbackEvent;
     struct rfidData{
@@ -150,6 +160,7 @@ private:
 public:
     const char* _certificate = "EE:1A:A8:59:25:F2:67:6B:4D:D2:BB:45:DE:AE:37:C2:CF:4C:97:A1";
     void loop();
+    void clear();
     void setSimpleCallback(Callback_Event callback);
     void setRawCallback();
     void intervalReading(int time);
@@ -157,10 +168,12 @@ public:
     void setDebug(bool debug);
     Spacecat(String Username, String Password, String DeviceName);
     Spacecat();
-    uint8_t getWifiQuality();
+    bool registerID();
     bool enteredPassword(String user_password);
+    bool pushValue(String value);
     bool begin(uint8_t SS_PIN);
     bool begin(uint8_t SS_PIN, uint8_t RESET_PIN);
+    int getWifiQuality();
 };
 
 #endif
