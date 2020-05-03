@@ -1,7 +1,7 @@
 ![](https://github.com/AsyaSyarif/RFID-Spacecat/blob/master/header.jpg)
 # Introduction
 Spacecat is an Arduino library for ESP8266/ESP32 to makes things easier that requires authentication with an RFID card.
-With this library you can easily  manage users with RFID card data stored in the cloud and also you can manage by schedule or even with special parameters.
+With this library you can easily  manage the users with RFID card data stored in the cloud and also you can manage by schedule or even with special parameters.
 
 [![Build Status](https://travis-ci.org/AsyaSyarif/RFID-Spacecat.svg?branch=master)](https://travis-ci.org/AsyaSyarif/RFID-Spacecat)
 [![arduino-library-badge](https://www.ardu-badge.com/badge/Spacecat.svg?)](https://www.ardu-badge.com/Spacecat)
@@ -134,16 +134,16 @@ Basically every we doing request to the server, that will return 4 basic data, w
 
 | Value  | Description |
 | ------------- | ------------- |
-| **Code**  | [101] Project not active|
-|      | [102]  User not active|
-|      | [103]  Placement not active|
-|      | [104]  Success|
-|      | [106]  Invalid password|
-|      | [107]  Waiting user password|
-|      | [108]  User reach the limit of parameters|
-|      | [109]  Not found|
-|      | [110]  User parameter updated|
-|      | [111]  Password OK|
+| **Code**  | ``[101]`` Project not active|
+|      | `` [102] ``  User not active|
+|      | `` [103] ``  Placement not active|
+|      | `` [104] ``  Success|
+|      | `` [106] ``  Invalid password|
+|      | `` [107] ``  Waiting user password|
+|      | `` [108] ``  User reach the limit of parameters|
+|      | `` [109] ``  Not found|
+|      | `` [110] ``  User parameter updated|
+|      | `` [111] ``  Password OK|
 | **Reference**  | ID Reference  for every requests  |
 | **Name**  | Name of user  |
 | **Messages**  | Messages status from requests  |
@@ -152,12 +152,12 @@ Basically every we doing request to the server, that will return 4 basic data, w
 ## Functions
 | Function  | Description | Default |
 | ------------- | ------------- | --------- | 
-| clear()  Clear data and proccess |  -` | 
-| readCard()  Just only reading RFID Card |  -  | 
-| registerID()  Registering the ID and added to waiting list |  - |
-| setDebug(bool debug)  Debugging purpose | true  |
-| intervalReading(int time)  Delay for every reading the card|   1000ms |
-| begin(uint8_t SS_PIN)  Initialization RC522 Module SS Pin and Reset to GND|  -  | 
-| begin(uint8_t SS_PIN, uint8_t RESET_PIN)  Initialization RC522 Module SS Pin & Reset Pin |  -  | 
-| enteredPassword(String password)  User inserting password |  - | 
-| Spacecat(String Username, String Password, String DeviceName); | Initialization your credentials | - | 
+| ``clear()`` |  Clear data and proccess |  - | 
+| ``readCard()`` | Just only reading RFID Card |  -  | 
+| ``registerID()`` | Registering the ID and added to waiting list |  - |
+| ``setDebug(bool debug)`` | Debugging purpose | ``true `` | |
+| ``intervalReading(int time)`` | Delay for every reading the card|   ``1000ms`` |
+| ``begin(uint8_t SS_PIN)`` | Initialization RC522 Module SS Pin and Reset to GND|  -  | 
+| ``begin(uint8_t SS_PIN, uint8_t RESET_PIN)``  |Initialization RC522 Module SS Pin & Reset Pin |  -  | 
+| ``enteredPassword(String password)`` | User inserting password |  - | 
+|`` Spacecat(String Username, String Password, String DeviceName)`` | Initialization your credentials | - | 
