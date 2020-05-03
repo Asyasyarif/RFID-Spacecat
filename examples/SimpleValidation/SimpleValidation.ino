@@ -8,18 +8,7 @@
  *   
  *  An simple example of how to auth the User :
  *  you can very easily manage user, placement, and can also add the rule for each placement
- *  
- *   Every you doing tap card or request to server, You definitely get a return value :
- *   101  Project not active          
- *   102  User not active             
- *   103  Placement not               
- *   104  SUCCEED                     
- *   105  UNSUCCESSFULL               
- *   106  Invalid Password            
- *   107  User Need Fill the Password 
- *   108  User reach the limit of parameter             
- *   109  Not Found
- *         
+ *        
  * 
  *  Written by Arif @2019. 
  *  Bandung, Indonesia 
