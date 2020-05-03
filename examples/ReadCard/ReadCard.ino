@@ -4,6 +4,8 @@
  *  Spacecat requires :
  *  RC522 :  https://github.com/miguelbalboa/rfid
  *     
+ *  This example just only read the Card.
+ * 
  *  Written by Arif @2019. 
  *  Bandung, Indonesia     
  *  https://rfid.asyarif.net
