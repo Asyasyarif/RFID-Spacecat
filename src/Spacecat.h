@@ -25,7 +25,7 @@
     SOFTWARE.
 *****************************************************************************/
 
-#define lib_version "1.3.0"
+#define lib_version "1.3.1"
 
 #ifndef _Spacecat_h_
 #define _Spacecat_h_

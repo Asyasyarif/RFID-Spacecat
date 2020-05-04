@@ -655,8 +655,15 @@ void Spacecat::readCard(){
             }
             this->validate(this->doHash(_content.substring(0)));
             return;
-        }else if(this->_isdoRegister){
+        }else if(this->_isdoRegister && !_doLoop){
+            if(this->_debug){
+                Serial.print(String("\n[DEBUG] RFID: ") + (this->doHash(_content.substring(0))));
+            }
             this->doRegister(this->doHash(_content.substring(0)));
+        }else{
+            if(this->_debug){
+                Serial.print(String("\n[DEBUG] RFID: ") + (this->doHash(_content.substring(0))));
+            }
         }
          _isreadCard = false;
     }   
