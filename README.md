@@ -9,6 +9,10 @@ With this library you can easily  manage the users with RFID card data stored in
 
 ## Getting Started
 
+### Quick Guide
+
+Youtube Videos (Bahasa) [here](https://youtu.be/dyNRkAb60So)
+
 ## Hardware Requirements
 >Spacecat is primary built for ESP8266 Chip. but for now ESP32 is a bit of a problem, now still in progress :)
 - Any board with ESP8266/ESP32 chips (Wemos, NodeMCU board, etc).
@@ -161,3 +165,9 @@ Basically every we doing request to the server, that will return 4 basic data, w
 | ``begin(uint8_t SS_PIN, uint8_t RESET_PIN)``  |Initialization RC522 Module SS Pin & Reset Pin |  -  | 
 | ``enteredPassword(String password)`` | User inserting password |  - | 
 |`` Spacecat(String Username, String Password, String DeviceName)`` | Initialization your credentials | - | 
+
+
+## To Do
+- Write clean code / Refactoring
+- Write API's
+- Write Documentations
