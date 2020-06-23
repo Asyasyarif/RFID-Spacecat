@@ -30,19 +30,16 @@ const char SPACECAT_PASSWORD[] = "";
 
 Spacecat cat(SPACECAT_USERNAME, SPACECAT_PASSWORD, DEVICE_NAME);
 
-void handleCallback(int code, String refrenceID, String name, String messages){
 
-  Serial.print("Code : ");
-  Serial.println(code);
+void handleCallback(bool userFound){
 
-  Serial.print("Ref : ");
-  Serial.println(refrenceID);
+  if(userFound){
+    Serial.print("Name : ");
+    Serial.println(cat.user.name);
 
-  Serial.print("Name : ");
-  Serial.println(name);
-
-  Serial.print("Messages : ");
-  Serial.println(messages);
+    Serial.print("Messages : ");
+    Serial.println(cat.user.messages);
+  }
   
 }
 
@@ -70,7 +67,7 @@ void setup() {
   Serial.println(WiFi.localIP());
 
   cat.begin(RC522_SS_PIN);
-  cat.setSimpleCallback(&handleCallback);
+  cat.setCallback(&handleCallback);
 }
 
 

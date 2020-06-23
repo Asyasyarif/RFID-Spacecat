@@ -6,7 +6,7 @@
  *  ArduinoJson : https://github.com/bblanchon/ArduinoJson
  *  - im use the latest version (Currently is 6.14.1)
  *   
- *  If you don't want to copy paste the ID card, 
+ *  If you don't want to copy an dpaste the ID card, 
  *  you can use this example and automatically the ID card will appear on your project
  * 
  *  Written by Arif @2019. 
@@ -28,7 +28,6 @@ const char SPACECAT_PASSWORD[] = "";
 #define RC522_SS_PIN 15 //D8
 
 Spacecat cat(SPACECAT_USERNAME, SPACECAT_PASSWORD, DEVICE_NAME);
-
 
 void setup() {
   //for debuging purpose

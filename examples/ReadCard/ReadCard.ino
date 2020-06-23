@@ -13,7 +13,7 @@
 
 #include "Spacecat.h"
 
-#define RC522_SS_PIN 15
+#define RC522_SS_PIN 5
 Spacecat cat;
 
 void setup(){
@@ -26,8 +26,12 @@ void setup(){
 
 void loop(){
 
-    cat.readCard();
+    if(cat.onlyReadCard()){
+      Serial.print("ID: ");
+      Serial.println(cat.user.rfid);
+    }
     delay (10);
     
 }
+
 

@@ -13,6 +13,8 @@ With this library you can easily  manage the users with RFID card data stored in
 
 Youtube Videos (Bahasa) [here](https://youtu.be/dyNRkAb60So)
 
+Youtube Videos (English) *Soon*
+
 ## Hardware Requirements
 >Spacecat is primary built for ESP8266 Chip. but for now ESP32 is a bit of a problem, now still in progress :)
 - Any board with ESP8266/ESP32 chips (Wemos, NodeMCU board, etc).
@@ -41,83 +43,17 @@ Now grab the hardware and some jumper wire and connect it like image shown below
 ![](https://github.com/AsyaSyarif/RFID-Spacecat/blob/master/circuits/basic.PNG)
 
 #### Wiring
-| ESP8266       | RC522         | 
-| ------------- |:-------------:|
-| 3V3      | 3.3V          | 
-| GND     | GND           | 
-| D8 (GPIO15) | SDA / SS      | 
-| D5 (GPIO14) | SCK      | 
-| D7 (GPIO13) | MOSI      | 
-| D6 (GPIO12) | MISO      | 
-| -| IRQ      | 
-| GND / X | RST      | 
+|ESP32  | ESP8266       | RC522         | 
+| --- | ------------- |:-------------:|
+| - | 3V3      | 3.3V          | 
+| - | GND     | GND           | 
+| - | D8 (GPIO15) | SDA / SS      | 
+| - | D5 (GPIO14) | SCK      | 
+| - | D7 (GPIO13) | MOSI      | 
+| - | D6 (GPIO12) | MISO      | 
+| - | -| IRQ      | 
+| - | GND / X | RST      | 
 
-### Simple Usage or Open this [Examples](https://github.com/AsyaSyarif/RFID-Spacecat/tree/master/examples) folder.
-```
-#include "Spacecat.h"
-
-const char WIFI_SSID[]     = "";   // your network SSID (name) 
-const char WIFI_PASSWORD[] = "";   // your network password
-
-const char DEVICE_NAME[] = "";
-const char SPACECAT_USERNAME[] = "";
-const char SPACECAT_PASSWORD[] = "";
-
-#define RC522_SS_PIN 15
-
-Spacecat cat(SPACECAT_USERNAME, SPACECAT_PASSWORD, DEVICE_NAME);
-
-void handleCallback(int code, String refrenceID, String name, String messages){
-  Serial.print("Code : ");
-  Serial.println(code);
-
-  Serial.print("Ref : ");
-  Serial.println(refrenceID);
-
-  Serial.print("Name : ");
-  Serial.println(name);
-
-  Serial.print("Messages : ");
-  Serial.println(messages);
-}
-
-
-void setup() {
-  //for debuging purpose
-  Serial.begin(115200);
-
-  Serial.println();
-  Serial.println();
-  Serial.print("Connecting to ");
-  Serial.print(WIFI_SSID);
-
-  WiFi.mode(WIFI_STA); 
-  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(200);
-    Serial.print(".");
-  }
-
-  Serial.println("");
-  Serial.println("WiFi connected");
-  Serial.print("IP address: ");
-  Serial.println(WiFi.localIP());
-
-  cat.begin(RC522_SS_PIN);
-  cat.setSimpleCallback(&handleCallback);
-}
-
-
-void loop() {
-  
-  if(WiFi.status() == WL_CONNECTED){
-    cat.loop();
-  }
-
-}
-
-```
 
 ## Get The Authentication Key
 + **Please pay attention to accessing our website, please use desktop version instead mobile version [only temporary]**
@@ -131,10 +67,11 @@ void loop() {
 const char SPACECAT_USERNAME[] = "";
 const char SPACECAT_PASSWORD[] = "";
 ```
-
+## Usage
+ Please check [Example's](https://github.com/Asyasyarif/RFID-Spacecat/tree/master/examples) folder
 
 ## API Docs
-Basically every we doing request to the server, that will return 4 basic data, which will be explained below
+Basically every we doing request to the server that will return the data, which will be explained below
 
 | Value  | Description |
 | ------------- | ------------- |
@@ -148,26 +85,60 @@ Basically every we doing request to the server, that will return 4 basic data, w
 |      | `` [109] ``  Not found|
 |      | `` [110] ``  User parameter updated|
 |      | `` [111] ``  Password OK|
-| **Reference**  | ID Reference  for every requests  |
-| **Name**  | Name of user  |
-| **Messages**  | Messages status from requests  |
+|      | `` [112] ``  Password Confirmation|
 
+## Structures 
+We'll separate the code structures into 3 parts : `.user`, `.ruleParameter`, `.placementParameter`
+
+| Struct        | Data | Data Type  | Description |
+| ------------- | ------------- | --------- | --------- | 
+| `{objectName}.user` | `.name` | `String` | Username |
+|                     | `.rfid` | `String` | User RFID |
+|                     | `.email` | `char` | Email |
+|                     | `.isMaster` | `char` | `true` if user has set to Master  |
+|                     | `.messages` | `char` | Message of every request |
+|                     | `.phoneNumber` | `char` | Phone Number |
+|                     | `.amount` | `int` | Amount of default parameter |
+|                     | `.referenceID` | `int` | Unique ID for every requests |
+|                     | `.havePassword` | `bool` | If user have password that's will be `true` |
+|                     | `.status` | `bool` | User status |
+|                     | `.statusCode` | `uint16_t` | Return code |
+|`{objectName}.ruleParameter`         | `.amount` | `int` | Amount of rule parameter |
+|`{objectName}.placementParameter`  | `.Name1` | `char` | Name of Placement parameter 1 |
+|  | `.value1` | `int` | Amount of rule parameter  1|
+|  | `.Name2` | `char` | Name of Placement parameter 2 |
+|  | `.value2` | `int` | Amount of rule parameter  2|
+|  | `.Name3` | `char` | Name of Placement parameter 3 |
+|  | `.value3` | `int` | Amount of rule parameter  3|
+|  | `.Name4` | `char` | Name of Placement parameter 4 |
+|  | `.value4` | `int` | Amount of rule parameter  4|
 
 ## Functions
-| Function  | Description | Default |
+| Function  | Default |  Description |
 | ------------- | ------------- | --------- | 
-| ``clear()`` |  Clear data and proccess |  - | 
-| ``readCard()`` | Just only reading RFID Card |  -  | 
-| ``registerID()`` | Registering the ID and added to waiting list |  - |
-| ``setDebug(bool debug)`` | Debugging purpose | ``true `` | |
-| ``intervalReading(int time)`` | Delay for every reading the card|   ``1000ms`` |
-| ``begin(uint8_t SS_PIN)`` | Initialization RC522 Module SS Pin and Reset to GND|  -  | 
-| ``begin(uint8_t SS_PIN, uint8_t RESET_PIN)``  |Initialization RC522 Module SS Pin & Reset Pin |  -  | 
-| ``enteredPassword(String password)`` | User inserting password |  - | 
-|`` Spacecat(String Username, String Password, String DeviceName)`` | Initialization your credentials | - | 
+| ``cancel()`` |  |   Cancel data and proccess | 
+| ``confirm()`` |  |   Confirm for changes parameters | 
+| ``onlyReadingCard()`` | |   Just only reading RFID Card  | 
+| ``registerID()`` |  |  Registering the ID and added to waiting list |
+| ``setDebug(bool debug)`` | ``true ``  | Debugging purpose |
+| ``setIntervalReading(int time)`` |   ``1000ms`` |  Delay for every reading the card
+| `` setTimeoutPassword(int time)`` |   ``10000ms`` |  Timer for user inserting the password
+| ``begin(uint8_t SS_PIN)`` | |  Initialization RC522 Module SS Pin and Reset to GND  | 
+| ``begin(uint8_t SS_PIN, uint8_t RESET_PIN)``  | | Initialization RC522 Module SS Pin & Reset Pin | 
+| ``enteredPassword(String password)`` |  |  User inserting password| 
+|`` Spacecat(String Username, String Password, String DeviceName)`` | |  Initialization your credentials | 
+|`` setCallback(&handleCallback);`` |  | Receive all the data feedback on any requests | 
 
+
+
+## Contribute
+There are several ways to contribute to Spacecat development. You can contribute to the repository by doing:
+- Pull requests
+- Create the issues
 
 ## To Do
 - Write clean code / Refactoring
 - Write API's
 - Write Documentations
+
+<sup>  [just contact me if you had any questions](https://www.instagram.com/asya_syarif/) </sup>
