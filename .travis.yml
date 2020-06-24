@@ -8,9 +8,6 @@ cache:
     directories:
     - "~/.platformio"
 
-env:
-    - PLATFORMIO_CI_SRC=examples/Simple/Simple.ino PLATFORMIO_CI_EXTRA_ARGS="--board=esp12e
-
 install:
     - pip install -U platformio
     - platformio update
@@ -18,7 +15,7 @@ install:
     - platformio lib -g install https://github.com/bblanchon/ArduinoJson
 
 script: 
-    - platformio ci --lib="." --board=esp12e
+    - platformio ci --src="examples/Simple/Simple.ino" --lib="." --board=esp12e
 
 notifications:
   email:
