@@ -1,12 +1,14 @@
-sudo: false
+
 
 language: python
 python:
     - "2.7"
-
+sudo: false
 cache:
     directories:
     - "~/.platformio"
+env: 
+    - PLATFORMIO_CI_SRC=examples/Simple/Simple.ino 
 
 install:
     - pip install -U platformio
@@ -14,8 +16,9 @@ install:
     - platformio lib -g install https://github.com/miguelbalboa/rfid
     - platformio lib -g install https://github.com/bblanchon/ArduinoJson
 
+
 script: 
-    - platformio ci --src="examples/Simple/Simple.ino" --lib="." --board=esp12e
+    - platformio ci --board=esp12e --lib="."
 
 notifications:
   email:
