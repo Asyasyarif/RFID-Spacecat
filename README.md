@@ -1,7 +1,7 @@
 ![](https://github.com/AsyaSyarif/RFID-Spacecat/blob/master/header.jpg)
 # Introduction
 Spacecat is an Arduino library for ESP8266/ESP32 to makes things easier that requires authentication with an RFID card.
-With this library you can easily  manage the users with RFID card data stored in the cloud and also you can manage by schedule or even with special parameters.
+With this library you can easily manage the users with RFID card which the data stored on the cloud and also you can manage by schedule or even with special parameters.
 
 [![Build Status](https://travis-ci.org/AsyaSyarif/RFID-Spacecat.svg?branch=master)](https://travis-ci.org/AsyaSyarif/RFID-Spacecat)
 [![arduino-library-badge](https://www.ardu-badge.com/badge/Spacecat.svg?)](https://www.ardu-badge.com/Spacecat)
