@@ -57,7 +57,7 @@ Now grab the hardware and some jumper wire and connect it like image shown below
 
 ## Get The Authentication Key
 + **Please pay attention to accessing our website, please use desktop version instead mobile version [only temporary]**
-- Sign Up [here](https://rfid.asyarif.net/login)
+- Sign Up [here]()
 - Create the Project.
 - Create the Placement.
 - After done then open placement  and go to **Options -> Credentials** menu.
